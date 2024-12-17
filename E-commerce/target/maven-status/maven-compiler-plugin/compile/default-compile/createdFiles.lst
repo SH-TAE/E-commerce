@@ -1,0 +1,8 @@
+com/tutul/ecommerce/controllers/CategoryController.class
+com/tutul/ecommerce/ECommerceApplication.class
+com/tutul/ecommerce/entities/Category.class
+com/tutul/ecommerce/entities/Cart.class
+com/tutul/ecommerce/controllers/CartController.class
+com/tutul/ecommerce/services/CartService.class
+com/tutul/ecommerce/entities/Product.class
+com/tutul/ecommerce/repositories/CartRepository.class

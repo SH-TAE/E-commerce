@@ -26,7 +26,7 @@ public class CategoryService {
     public Category updateCategory(Long id, Category updatedCategory) {
         Category category = categoryRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No such Categories found with this id "+id));
         category.setName(updatedCategory.getName());
-        category.setActive(updatedCategory.getActive());
+        category.setIsActive(updatedCategory.getIsActive());
         return categoryRepository.save(category);
     }
 }

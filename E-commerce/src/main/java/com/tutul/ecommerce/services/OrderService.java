@@ -1,6 +1,6 @@
 package com.tutul.ecommerce.services;
 
-import com.tutul.ecommerce.entities.Order;
+import com.tutul.ecommerce.entities.Orders;
 import com.tutul.ecommerce.entities.OrderItems;
 import com.tutul.ecommerce.exception.OrderNotFoundException;
 import com.tutul.ecommerce.repositories.OrderItemRepository;
@@ -23,28 +23,30 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrder(Order order, List<OrderItems> orderItemsList) {
+    public Orders createOrder(Orders orders, List<OrderItems> orderItemsList) {
         double totalPrice = 0.0;
         for (OrderItems orderItem : orderItemsList) {
             totalPrice += orderItem.getQuantity() * orderItem.getPrice();
+            Integer quantity = orderItem.getQuantity();
+            System.err.println("Quantity: " + quantity);
         }
-        order.setTotalPrice(totalPrice);
+        orders.setTotalPrice(totalPrice);
 
-        Order savedOrder = orderRepository.save(order);
+        Orders savedOrders = orderRepository.save(orders);
 
         for (OrderItems orderItem : orderItemsList) {
-            orderItem.setOrder(savedOrder);
+            orderItem.setOrders(savedOrders);
             orderItemRepository.save(orderItem);
         }
 
-        return savedOrder;
+        return savedOrders;
     }
 
-    public List<Order> getAllOrders() {
+    public List<Orders> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    public Order getOrderById(Long id) {
+    public Orders getOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
     }

@@ -2,7 +2,7 @@ package com.tutul.ecommerce.controllers;
 
 
 import com.tutul.ecommerce.dto.OrderRequestDTO;
-import com.tutul.ecommerce.entities.Order;
+import com.tutul.ecommerce.entities.Orders;
 import com.tutul.ecommerce.entities.OrderItems;
 import com.tutul.ecommerce.services.OrderService;
 import org.springframework.web.bind.annotation.*;
@@ -21,21 +21,21 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public Order createOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
-        Order order = orderRequestDTO.getOrder(); // Extract order and order items from the DTO
+    public Orders createOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+        Orders orders = orderRequestDTO.getOrders(); // Extract order and order items from the DTO
 
         List<OrderItems> orderItemsList = orderRequestDTO.getOrderItems();
 
-        return orderService.createOrder(order, orderItemsList);
+        return orderService.createOrder(orders, orderItemsList);
     }
 
     @GetMapping("/orders")
-    public List<Order> getAllOrders() {
+    public List<Orders> getAllOrders() {
         return orderService.getAllOrders();
     }
 
     @GetMapping("orders/{id}")
-    public Order getOrderById(@PathVariable Long id) {
+    public Orders getOrderById(@PathVariable Long id) {
         return orderService.getOrderById(id);
     }
 }
