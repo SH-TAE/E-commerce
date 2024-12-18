@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="HttpClientEndpointsTabState">
-    <option name="requestToText" value="&lt;CachedHttpClientTabRequests&gt;&#10;  &lt;entry key=&quot;bb76ba1c54d0c03d9964e423648d01182fb1f69e&quot; value=&quot;###&amp;#10;POST http://localhost:8080/api/orders&amp;#10;Content-Type: application/json&amp;#10;&amp;#10;{&amp;#10;  &amp;quot;address&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;shippingCost&amp;quot;: 0,&amp;#10;  &amp;quot;orderItems&amp;quot;: []&amp;#10;}&quot; /&gt;&#10;&lt;/CachedHttpClientTabRequests&gt;" />
+    <option name="requestToText" value="&lt;CachedHttpClientTabRequests&gt;&#10;  &lt;entry key=&quot;bb76ba1c54d0c03d9964e423648d01182fb1f69e&quot; value=&quot;###&amp;#10;POST http://localhost:8080/api/orders&amp;#10;Content-Type: application/json&amp;#10;&amp;#10;{&amp;#10;  &amp;quot;address&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;shippingCost&amp;quot;: 0,&amp;#10;  &amp;quot;orderItems&amp;quot;: []&amp;#10;}&quot; /&gt;&#10;  &lt;entry key=&quot;c96ff4590438083e2926b5203d941f0627dfe16e&quot; value=&quot;###&amp;#10;POST http://localhost:8080/api/cart&amp;#10;Content-Type: application/json&amp;#10;&amp;#10;{&amp;#10;  &amp;quot;id&amp;quot;: 0,&amp;#10;  &amp;quot;product&amp;quot;: {},&amp;#10;  &amp;quot;quantity&amp;quot;: 0,&amp;#10;  &amp;quot;totalPrice&amp;quot;: 0&amp;#10;}&quot; /&gt;&#10;&lt;/CachedHttpClientTabRequests&gt;" />
   </component>
 </project>

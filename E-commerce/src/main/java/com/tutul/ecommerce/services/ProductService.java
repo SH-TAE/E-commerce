@@ -6,6 +6,9 @@ import com.tutul.ecommerce.exception.ProductNotFoundException;
 import com.tutul.ecommerce.repositories.ProductRepository;
 import com.tutul.ecommerce.specification.ProductFilterParams;
 import com.tutul.ecommerce.specification.ProductFilterSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import javax.naming.InsufficientResourcesException;
@@ -26,10 +29,11 @@ public class ProductService {
 //    }
 //
 
-    public List<Product> getAllActiveProducts(String title, String description, String category, Double price) {
+    public Page<Product> getAllActiveProducts(String title, String description, String category, Double price,int page,int size) {
         System.err.println("invoked");
         Specification<Product> specification = ProductFilterSpecification.getFilteredProduct(new ProductFilterParams(title, description, category, price));
-        return productRepository.findAll(specification);
+        Pageable pageable = PageRequest.of(page, size);
+        return (Page<Product>) productRepository.findAll(specification);
     }
 
 
