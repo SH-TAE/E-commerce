@@ -1,6 +1,7 @@
 package com.tutul.ecommerce.controllers;
 
 import com.tutul.ecommerce.entities.Product;
+import com.tutul.ecommerce.repositories.ProductRepository;
 import com.tutul.ecommerce.services.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.InsufficientResourcesException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,8 +24,14 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public Page<Product> getAllProducts(Pageable pageable) {
-        return productService.getAllActiveProducts(pageable);
+    public ResponseEntity<Page<Product>> getAllProducts(@RequestParam(required = false) String title,
+                                                        @RequestParam(required = false) String description,
+                                                        @RequestParam(required = false) String category,
+                                                        @RequestParam(required = false) Double price,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "3") int size) {
+        Page<Product> products = productService.getAllActiveProducts(title, description, category, price, page, size);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("products/{id}")

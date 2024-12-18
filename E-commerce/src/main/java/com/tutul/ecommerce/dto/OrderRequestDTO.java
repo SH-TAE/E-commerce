@@ -9,22 +9,10 @@ import java.util.List;
 @Data
 public class OrderRequestDTO {
 
-    private Orders orders;
-    private List<OrderItems> orderItems;
+    private String address;
 
-    public Orders getOrders() {
-        return orders;
-    }
+    private Double shippingCost;
 
-    public void setOrders(Orders orders) {
-        this.orders = orders;
-    }
+    private List<OrderItemsDTO> orderItems;
 
-    public List<OrderItems> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<OrderItems> orderItems) {
-        this.orderItems = orderItems;
-    }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,15 +14,22 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    private String address;
+
+    private Double shippingCost;
+
     private Double totalPrice;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "orders")
-    private List<OrderItems> orderItems;
+    private List<OrderItems> orderItems = new ArrayList<>();
+
+
 
 }
 
