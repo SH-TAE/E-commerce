@@ -33,7 +33,7 @@ public class ProductService {
         System.err.println("invoked");
         Specification<Product> specification = ProductFilterSpecification.getFilteredProduct(new ProductFilterParams(title, description, category, price));
         Pageable pageable = PageRequest.of(page, size);
-        return (Page<Product>) productRepository.findAll(specification);
+        return (Page<Product>) productRepository.findAll(specification, pageable);
     }
 
 
