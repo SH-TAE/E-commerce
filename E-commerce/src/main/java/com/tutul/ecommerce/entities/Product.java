@@ -27,7 +27,7 @@ public class Product {
 
     private Boolean isActive;
 
-    private Integer discount; // count in percentage
+    private Integer discount;
 
     @ManyToOne
     private Category category;

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.InsufficientResourcesException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,8 +23,12 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public Page<Product> getAllProducts(Pageable pageable) {
-        return productService.getAllActiveProducts(pageable);
+    public List<Product> getAllProducts(@RequestParam(required = false) String title,
+                                        @RequestParam(required = false) String description,
+                                        @RequestParam(required = false) String category,
+                                        @RequestParam(required=false) Double price)
+    {
+        return productService.getAllActiveProducts(title,description,category,price);
     }
 
     @GetMapping("products/{id}")

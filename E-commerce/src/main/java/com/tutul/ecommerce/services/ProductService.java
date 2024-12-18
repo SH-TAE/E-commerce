@@ -4,12 +4,12 @@ import com.tutul.ecommerce.entities.Product;
 import com.tutul.ecommerce.exception.DuplicateProductException;
 import com.tutul.ecommerce.exception.ProductNotFoundException;
 import com.tutul.ecommerce.repositories.ProductRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.tutul.ecommerce.specification.ProductFilterParams;
+import com.tutul.ecommerce.specification.ProductFilterSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import javax.naming.InsufficientResourcesException;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -21,8 +21,15 @@ public class ProductService {
     }
 
 
-    public Page<Product> getAllActiveProducts(Pageable pageable) {
-        return productRepository.findByIsActiveTrue(pageable);
+//    public Page<Product> getAllActiveProducts(Pageable pageable) {
+//        return productRepository.findByIsActiveTrue(pageable);
+//    }
+//
+
+    public List<Product> getAllActiveProducts(String title, String description, String category, Double price) {
+        System.err.println("invoked");
+        Specification<Product> specification = ProductFilterSpecification.getFilteredProduct(new ProductFilterParams(title, description, category, price));
+        return productRepository.findAll(specification);
     }
 
 
