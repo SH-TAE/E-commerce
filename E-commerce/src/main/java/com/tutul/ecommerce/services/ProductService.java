@@ -1,8 +1,11 @@
 package com.tutul.ecommerce.services;
 
+import com.tutul.ecommerce.dto.ProductRequestDTO;
+import com.tutul.ecommerce.entities.Category;
 import com.tutul.ecommerce.entities.Product;
 import com.tutul.ecommerce.exception.DuplicateProductException;
 import com.tutul.ecommerce.exception.ProductNotFoundException;
+import com.tutul.ecommerce.repositories.CategoryRepository;
 import com.tutul.ecommerce.repositories.ProductRepository;
 import com.tutul.ecommerce.specification.ProductFilterParams;
 import com.tutul.ecommerce.specification.ProductFilterSpecification;
@@ -18,16 +21,13 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-
-//    public Page<Product> getAllActiveProducts(Pageable pageable) {
-//        return productRepository.findByIsActiveTrue(pageable);
-//    }
-//
 
     public Page<Product> getAllActiveProducts(String title, String description, String category, Double price,int page,int size) {
         System.err.println("invoked");
@@ -43,16 +43,31 @@ public class ProductService {
     }
 
 
-    public Product addProduct(Product product) {
-        boolean exists = productRepository.existsByTitleAndCategoryId(product.getTitle(), product.getCategory().getId());
+    public Product addProduct(ProductRequestDTO productRequestDTO) {
+        Long categoryId = productRequestDTO.getCategoryId();
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
+
+        boolean exists = productRepository.existsByTitleAndCategoryId(productRequestDTO.getTitle(), categoryId);
         if (exists) {
-            throw new DuplicateProductException("Product with title '" + product.getTitle() + " already exists in category ");
+            throw new DuplicateProductException("Product with title '" + productRequestDTO.getTitle() + "' already exists in category.");
         }
+         //  // map to my created Dto
+        Product product = new Product();
+        product.setTitle(productRequestDTO.getTitle());
+        product.setDescription(productRequestDTO.getDescription());
+        product.setPrice(productRequestDTO.getPrice());
+        product.setStock(productRequestDTO.getStock());
+        product.setIsActive(productRequestDTO.getIsActive());
+        product.setDiscount(productRequestDTO.getDiscount());
+        product.setCategory(category);
+
         return productRepository.save(product);
     }
 
 
-    public Product updateProduct(Long id, Product updatedProduct) {
+    public Product updateProduct(Long id, ProductRequestDTO updatedProduct) {
         Product product = getProductById(id);
         product.setTitle(updatedProduct.getTitle());
         product.setDescription(updatedProduct.getDescription());

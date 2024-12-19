@@ -17,7 +17,19 @@ public class CategoryService {
     }
 
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        return categoryRepository.findByIsActiveTrue();
+    }
+
+    public void deleteCategoryById(Long id) {
+        Category category = getCategoryById(id);
+        category.setIsActive(false);
+        categoryRepository.save(category);
+    }
+
+
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
     }
 
     public void createCategory(Category category) {
