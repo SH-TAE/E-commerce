@@ -1,16 +1,14 @@
 package com.tutul.ecommerce.controllers;
 
+import com.tutul.ecommerce.dto.ProductRequestDTO;
 import com.tutul.ecommerce.entities.Product;
-import com.tutul.ecommerce.repositories.ProductRepository;
 import com.tutul.ecommerce.services.ProductService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.InsufficientResourcesException;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -39,14 +37,15 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @PostMapping("/products")
-    public Product addProduct(@RequestBody Product product) {
-        return productService.addProduct(product);
+    @PostMapping("/product")
+    public ResponseEntity<Product> addProduct(@RequestBody ProductRequestDTO productRequestDTO) {
+        Product product = productService.addProduct(productRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @PutMapping("/product/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        return productService.updateProduct(id, product);
+    public Product updateProduct(@PathVariable Long id, @RequestBody ProductRequestDTO updatedProduct) {
+        return productService.updateProduct(id, updatedProduct);
     }
 
     @DeleteMapping("/product/{id}")

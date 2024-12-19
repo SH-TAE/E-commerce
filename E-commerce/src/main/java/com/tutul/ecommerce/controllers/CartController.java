@@ -1,7 +1,10 @@
 package com.tutul.ecommerce.controllers;
 
+import com.tutul.ecommerce.dto.CartDTO;
 import com.tutul.ecommerce.entities.Cart;
 import com.tutul.ecommerce.services.CartService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +17,9 @@ public class CartController {
     }
 
     @PostMapping("/cart")
-    public Cart addToCart(@RequestBody Cart cart) {
-        return cartService.addToCart(cart);
+    public ResponseEntity<Cart> addToCart(@RequestBody CartDTO cartDTO) {
+        Cart cart = cartService.addToCart(cartDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
     @GetMapping("/cart/{id}")
