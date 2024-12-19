@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="HttpClientEndpointsTabState">
-    <option name="requestToText" value="&lt;CachedHttpClientTabRequests&gt;&#10;  &lt;entry key=&quot;5c9521f76007d2b74c1ddf47211805ca6f156a91&quot; value=&quot;###&amp;#10;PUT http://localhost:8080/api/product/{{id}}&amp;#10;Content-Type: application/json&amp;#10;&amp;#10;{&amp;#10;  &amp;quot;id&amp;quot;: 0,&amp;#10;  &amp;quot;title&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;description&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;price&amp;quot;: 0,&amp;#10;  &amp;quot;stock&amp;quot;: 0,&amp;#10;  &amp;quot;isActive&amp;quot;: false,&amp;#10;  &amp;quot;discount&amp;quot;: 0,&amp;#10;  &amp;quot;category&amp;quot;: {}&amp;#10;}&quot; /&gt;&#10;&lt;/CachedHttpClientTabRequests&gt;" />
+    <option name="requestToText" value="&lt;CachedHttpClientTabRequests&gt;&#10;  &lt;entry key=&quot;14a8b776407eba7114fcc1ab45393da130dba8e2&quot; value=&quot;###&amp;#10;PUT http://localhost:8080/api/cart/{{cartId}}&amp;#10;Content-Type: application/json&amp;#10;&amp;#10;{&amp;#10;  &amp;quot;productId&amp;quot;: 0,&amp;#10;  &amp;quot;quantity&amp;quot;: 0&amp;#10;}&quot; /&gt;&#10;&lt;/CachedHttpClientTabRequests&gt;" />
   </component>
 </project>

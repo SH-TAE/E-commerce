@@ -57,4 +57,46 @@ public class CartService {
     public Cart getCartById(Long id) {
         return cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart not found"));
     }
+
+    public Cart updateCart(Long cartId, CartDTO cartDTO) {
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        Product product = productRepository.findById(cartDTO.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+
+        if (!product.getIsActive()) {
+            throw new ProductNotFoundException("The Product is not available anymore");
+        }
+        if (!cart.getProduct().getId().equals(cartDTO.getProductId())) {
+            throw new RuntimeException("The product ID in the cart doesn't match the requested product ID");
+
+        }
+
+            // Adjust quantity if added or Removed products
+        int currentQuantity = cart.getQuantity();
+        int newQuantity = cartDTO.getQuantity();
+        int quantityDifference = newQuantity - currentQuantity;
+
+        if (quantityDifference > 0 && quantityDifference > product.getStock()) {
+            throw new RuntimeException("Insufficient stock for product ID: " + product.getId());
+        }
+
+        product.setStock(product.getStock() - quantityDifference);
+        productRepository.save(product);
+
+        double discountedPrice = product.getPrice();
+        if (product.getDiscount() != null && product.getDiscount() > 0) {
+            discountedPrice -= (product.getPrice() * product.getDiscount() / 100);
+        }
+        double newTotalPrice = discountedPrice * newQuantity;
+
+        cart.setQuantity(newQuantity);
+        cart.setTotalPrice(newTotalPrice);
+
+        return cartRepository.save(cart);
+    }
+
+
 }
