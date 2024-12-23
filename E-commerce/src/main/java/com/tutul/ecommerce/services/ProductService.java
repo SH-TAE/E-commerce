@@ -4,6 +4,7 @@ import com.tutul.ecommerce.dto.ProductRequestDTO;
 import com.tutul.ecommerce.entities.Category;
 import com.tutul.ecommerce.entities.Product;
 import com.tutul.ecommerce.exception.DuplicateProductException;
+import com.tutul.ecommerce.exception.InvalidProductPriceException;
 import com.tutul.ecommerce.exception.ProductNotFoundException;
 import com.tutul.ecommerce.repositories.CategoryRepository;
 import com.tutul.ecommerce.repositories.ProductRepository;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import javax.naming.InsufficientResourcesException;
-import java.util.List;
 
 @Service
 public class ProductService {
@@ -29,7 +29,7 @@ public class ProductService {
     }
 
 
-    public Page<Product> getAllActiveProducts(String title, String description, String category, Double price,int page,int size) {
+    public Page<Product> getAllActiveProducts(String title, String description, String category, Double price, int page, int size) {
         System.err.println("invoked");
         Specification<Product> specification = ProductFilterSpecification.getFilteredProduct(new ProductFilterParams(title, description, category, price));
         Pageable pageable = PageRequest.of(page, size);
@@ -53,7 +53,17 @@ public class ProductService {
         if (exists) {
             throw new DuplicateProductException("Product with title '" + productRequestDTO.getTitle() + "' already exists in category.");
         }
-         //  // map to my created Dto
+
+        if (productRequestDTO.getDiscount() != null && productRequestDTO.getDiscount() > 0) {
+            Double originalPrice = productRequestDTO.getPrice();
+            double discountedPrice = originalPrice - (originalPrice * productRequestDTO.getDiscount() / 100);
+
+            // * // Cannot give discount more than 50% on a product
+            if (discountedPrice < originalPrice * 0.50) {
+                throw new InvalidProductPriceException("Price cannot be reduced by more than 50%");
+            }
+        }
+        // * // map to my created Dto
         Product product = new Product();
         product.setTitle(productRequestDTO.getTitle());
         product.setDescription(productRequestDTO.getDescription());
@@ -86,8 +96,8 @@ public class ProductService {
 
     public void adjustStock(Long productId, int quantity) throws InsufficientResourcesException {
         Product product = getProductById(productId);
-        int newStock = product.getStock() - quantity;
-        if (newStock < 0) {
+        int newStock = product.getStock() + quantity;
+        if (newStock < 50) {
             throw new InsufficientResourcesException("Insufficient stock for product: " + product.getTitle());
         }
         product.setStock(newStock);
@@ -100,11 +110,16 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         if (discount != null && discount > 0) {
-            Double discountedPrice = product.getPrice() - (product.getPrice() * discount / 100);
-            product.setPrice(discountedPrice); // Update price temporar
+            Double originalPrice = product.getPrice();
+            double discountedPrice = originalPrice - (originalPrice * discount / 100);
+
+            if (discountedPrice < originalPrice * 0.50) {
+                throw new InvalidProductPriceException("Price cannot be reduced by more than 50%");
+            }
+            product.setPrice(discountedPrice);
         }
 
-        return product; // Return after updating the price
+        return product;
     }
 
 }
