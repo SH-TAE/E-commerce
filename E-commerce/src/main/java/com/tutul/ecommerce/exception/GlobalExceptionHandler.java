@@ -66,5 +66,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(apiError, HttpStatusCode.valueOf(apiError.getStatus()));
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    protected ResponseEntity<ApiError> handleInsufficientStockException(InsufficientStockException e) {
+        ApiError apiError = new ApiError(
+                LocalDateTime.now(),
+                400,
+                e.getMessage(),
+                servletRequest.getServletPath(),
+                "Insufficient stock"
+        );
+        return new ResponseEntity<>(apiError, HttpStatusCode.valueOf(apiError.getStatus()));
+    }
 }
 

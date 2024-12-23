@@ -1,16 +1,15 @@
 package com.tutul.ecommerce.dto;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+import java.util.List;
+
 
 @Data
-@Getter
-@Setter
 public class CartDTO {
 
-    private Long productId;
+    private Long cartId;
 
-    private Integer quantity;
+    private List<CartItemDTO> items;
 
 }
