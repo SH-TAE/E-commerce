@@ -1,8 +1,11 @@
 package com.tutul.ecommerce.services;
 
 import com.tutul.ecommerce.dto.CartDTO;
+import com.tutul.ecommerce.dto.CartItemDTO;
 import com.tutul.ecommerce.entities.Cart;
+import com.tutul.ecommerce.entities.CartItem;
 import com.tutul.ecommerce.entities.Product;
+import com.tutul.ecommerce.exception.InsufficientStockException;
 import com.tutul.ecommerce.exception.ProductNotFoundException;
 import com.tutul.ecommerce.repositories.CartRepository;
 import com.tutul.ecommerce.repositories.ProductRepository;
@@ -16,45 +19,72 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
-    public CartService(CartRepository cartRepository, ProductRepository productRepository) {
+    public CartService(CartRepository cartRepository, ProductRepository productRepository, CartRepository cartItemRepository1) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
     }
 
-    public Cart addToCart(CartDTO cartDTO) {
+    public Cart addOrUpdateCart(CartDTO cartDTO) {
+        Cart cart;
 
-        Product product = productRepository.findById(cartDTO.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: "));
-
-        if (!product.getIsActive()) {
-            throw new ProductNotFoundException("The Product is not available Anymore");
+        if (cartDTO.getCartId() != null) {
+            cart = cartRepository.findById(cartDTO.getCartId())
+                    .orElseThrow(() -> new RuntimeException("Cart not found"));
+        } else {
+            cart = new Cart();
         }
 
-        if (cartDTO.getQuantity() > product.getStock()) {
-            throw new RuntimeException("Insufficient stock for product ID: ");
+        double totalCartPrice = 0.0;
+
+        for (CartItemDTO itemDTO : cartDTO.getItems()) {
+
+            Product product = productRepository.findById(itemDTO.getProductId())
+                    .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+
+            if (itemDTO.getQuantity() > product.getStock()) {
+                throw new InsufficientStockException("Insufficient stock for product ID: " + product.getId());
+            }
+
+            CartItem existingItem = null;
+            for (CartItem item : cart.getItems()) {
+                if (item.getProduct().getId().equals(itemDTO.getProductId())) {
+                    existingItem = item;
+                    break;
+                }
+            }
+
+            if (existingItem != null) {
+
+                int quantityDifference = itemDTO.getQuantity() - existingItem.getQuantity();
+                product.setStock(product.getStock() - quantityDifference);
+                existingItem.setQuantity(itemDTO.getQuantity());
+                existingItem.setTotalPrice(product.getPrice() * itemDTO.getQuantity());
+            } else {
+                product.setStock(product.getStock() - itemDTO.getQuantity());
+
+                CartItem newItem = new CartItem();
+                newItem.setCart(cart);
+                newItem.setProduct(product);
+                newItem.setQuantity(itemDTO.getQuantity());
+                newItem.setTotalPrice(product.getPrice() * itemDTO.getQuantity());
+
+                cart.getItems().add(newItem);
+            }
+
+            totalCartPrice += product.getPrice() * itemDTO.getQuantity();
         }
 
-        double discountedPrice = product.getPrice();
-        if (product.getDiscount() != null && product.getDiscount() > 0) {
-            discountedPrice -= (product.getPrice() * product.getDiscount() / 100);
+        cart.setTotalCartPrice(totalCartPrice);
+
+        for (CartItem item : cart.getItems()) {
+            productRepository.save(item.getProduct());
         }
-
-        // Calculate total price for the cart item
-        double totalPrice = discountedPrice * cartDTO.getQuantity();
-
-        // Update the product stock
-        product.setStock(product.getStock() - cartDTO.getQuantity());
-        productRepository.save(product);
-
-        Cart cart = new Cart();
-        cart.setProduct(product);
-        cart.setQuantity(cartDTO.getQuantity());
-        cart.setTotalPrice(totalPrice);
-
         return cartRepository.save(cart);
     }
 
-    public Cart getCartById(Long id) {
-        return cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart not found"));
+    public Cart getCartById(Long cartId) {
+        return cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found with ID: " + cartId));
     }
+
 }

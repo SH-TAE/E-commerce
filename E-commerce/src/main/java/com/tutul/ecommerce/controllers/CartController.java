@@ -8,22 +8,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/cart")
 public class CartController {
+
     private final CartService cartService;
 
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 
-    @PostMapping("/cart")
-    public ResponseEntity<Cart> addToCart(@RequestBody CartDTO cartDTO) {
-        Cart cart = cartService.addToCart(cartDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
+    @PostMapping("/add-or-update")
+    public ResponseEntity<Cart> addOrUpdateCart(@RequestBody CartDTO cartDTO) {
+        Cart updatedCart = cartService.addOrUpdateCart(cartDTO);
+        return ResponseEntity.ok(updatedCart);
     }
 
-    @GetMapping("/cart/{id}")
-    public Cart getCartById(@PathVariable Long id) {
-        return cartService.getCartById(id);
+    @GetMapping("/{cartId}")
+    public ResponseEntity<Cart> getCartById(@PathVariable Long cartId) {
+        Cart cart = cartService.getCartById(cartId);
+        return ResponseEntity.ok(cart);
     }
+
 }
